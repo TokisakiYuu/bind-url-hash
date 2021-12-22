@@ -32,7 +32,7 @@ function MyComp() {
 
 bindding is **responsive** !
 
-when you change url hash, the component will update whit it.
+when you change url hash, the component will update with it.
 
 
 ## DEMO
