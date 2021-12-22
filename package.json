@@ -1,0 +1,28 @@
+{
+  "name": "bind-url-hash",
+  "version": "0.0.1-beta",
+  "description": "useURLHash hook and <URLHash /> component",
+  "main": "dist/main.js",
+  "typings": "dist/types/main.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": [
+    "react",
+    "hook",
+    "url",
+    "hash",
+    "mvvm"
+  ],
+  "author": "tokisakiyuu <tokisakiyuu@qq.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {
+    "react": "^17.0.2",
+    "tslib": "^2.3.1"
+  }
+}
