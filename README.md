@@ -8,7 +8,7 @@
   </h1>
 </div>
 
-## *use url hash store state and provide responsive react hook*
+## *use url hash store state and provide react hook*
 
 ```
 http://example.com/#message=hello
@@ -29,11 +29,6 @@ function MyComp() {
   )
 }
 ```
-
-bindding is **responsive** !
-
-when you change url hash, the component will update with it.
-
 
 ## DEMO
 [CodeSandbox](https://codesandbox.io/s/bind-url-hash-demo-63bnb)

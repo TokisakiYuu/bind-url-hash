@@ -8,65 +8,53 @@ import { useEffect, useState } from 'react'
  * ```
  * 解析为
  * ```
- * Map {
- *  key1 => value
- *  key2 => value
+ * {
+ *  key1: value
+ *  key2: value
  * }
  * ```
  */
- function paserHash(hash: string): Map<string, string> {
-  if (!hash) return new Map()
+ function paserHash(hash: string): Record<string, string> {
+  if (!hash) return {}
   return (hash.startsWith('#') ? hash.substring(1) : hash)
     .split(/(?<!\\)&/)
     .map(item => item.split(/(?<!\\)=/))
     .map(kv   => kv.length === 1 ? kv.concat(['']) : kv)
-    .reduce((map, kv) => map.set(kv[0], kv[1]), new Map())
+    .reduce((map, kv) => {
+      map[kv[0]] = kv[1]
+      return map
+    }, {})
 }
+
 
 /**
  * 键值对表序列化为url hash
  */
-function serialize(map: Map<string, string>): string {
-  return '#' + Array.from(map).map(kv => kv.join('=')).join('&')
-}
-
-function mapToObject(map: Map<string | number, any>): URLHashData {
-  return Array.from(map).reduce((obj, [key, value]) => {
-    obj[key] = value
-    return obj
-  }, {})
+function serialize(map: Record<string, string>): string {
+  return '#' + Reflect.ownKeys(map).map(key => String(key)).map(key => `${key}=${map[key]}`).join('&')
 }
 
 function currentHashState() {
-  return mapToObject(paserHash(decodeURI(location.hash)))
+  return paserHash(decodeURI(location.hash))
 }
 
-// ignore url hash change flag to make not trigger popstate event in all hook function
-let ignoreHashChange = false
-
-/**
- * 双向绑定URL hash
- */
 export function useURLHash(): [URLHashData, URLHashSetFunction] {
-  const [state, setState] = useState(currentHashState())
+  const [data, setData] = useState(currentHashState())
 
   useEffect(() => {
-    const onPopstate = () => setTimeout(() => !ignoreHashChange && setState(currentHashState()), 0)
+    const onPopstate = () => setData(currentHashState())
     window.addEventListener('popstate', onPopstate)
     return () => window.removeEventListener('popstate', onPopstate)
   })
 
+
   const set = (name: string, value: string) => {
-    if (state[name] === value) return
-    ignoreHashChange = true
-    const map = paserHash(location.hash)
-    map.set(name, value)
-    location.hash = serialize(map)
-    ignoreHashChange = false
-    setState(mapToObject(map))
+    if (data[name] === value) return
+    data[name] = value
+    location.hash = serialize(data)
   }
 
-  return [state, set]
+  return [data, set]
 }
 
 export interface URLHashData {
